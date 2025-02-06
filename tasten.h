@@ -26,23 +26,23 @@ class Tasten
     if ( !cap.begin(0x5A) )  
     return {};
     delay(50);
-    Serial.println("lese_Tastencode");
+    //Serial.println("lese_Tastencode");
     tastencode="";
     
     unsigned long letzte_taste_zeit = 0; // Zeit des letzten Tastendrucks
-    const unsigned long zeit_pro_taste = 2000; // Timeout in Millisekunden
+    const unsigned long zeit_pro_taste = 1000; // Timeout in Millisekunden
 
     int cnt=0;
     while (true)
     {
       currtouched = cap.touched();
-      Serial.print(currtouched);
+      /*Serial.print(currtouched);
       Serial.print(" TK:");
       Serial.print(tastencode);
       Serial.print(" LT:");
       Serial.print(lasttouched);
       Serial.print(" Tz:");
-      Serial.println(letzte_taste_zeit);
+      Serial.println(letzte_taste_zeit);*/
 
       for (uint8_t i=0; i<12; i++) {
         if (!(currtouched & _BV(i)) && (lasttouched & _BV(i)) ) {       
@@ -65,8 +65,6 @@ class Tasten
           if (cnt++ > 5)
             break;
         }
-      
-    
       delay(10);   
     }
     delay(100);

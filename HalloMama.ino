@@ -1,26 +1,17 @@
 #include <Bonezegei_LCD1602_I2C.h>
-#include <Adafruit_PN532.h>
-#include <SoftwareSerial.h>
-
 #include "datenbank.h"
 #include "handy.h"
 #include "tasten.h"
+#include "nfc.h"
 
 
-
-// If using the breakout or shield with I2C, define just the pins connected
-// to the IRQ and reset lines.  Use the values below (2, 3) for the shield!
-#define PN532_IRQ   (2)
-#define PN532_RESET (3)  // Not connected by default on the NFC Shield
-
-// Or use this line for a breakout or shield with an I2C connection:
-Adafruit_PN532 nfc(PN532_IRQ, PN532_RESET);
 
 Bonezegei_LCD1602_I2C lcd(0x27);
 
 Datenbank db;
 Handy handy;
 Tasten keys;
+NFC nfc(2,3);
 
 
 void initLCD() {
@@ -43,19 +34,7 @@ void initLCD() {
   delay(1000);
 }
 
-void initNRF() {
-  Serial.println("initNRF...");
-  nfc.begin();
-  Serial.println("  NRF start...");
 
-  uint32_t versiondata = nfc.getFirmwareVersion();
-  if (! versiondata) {
-    Serial.println("Didn't find PN53x board");
-    while (1); // halt
-  }
-  //nfc.setPassiveActivationRetries(0xFF);  
-  Serial.println("  NRF init OK");
-}
 
 
 void setup() {
@@ -69,9 +48,8 @@ void setup() {
   Serial.println("Start");
   
   keys.start();
+  nfc.start();
   initLCD();
-
-  initNRF(); 
   delay(1000);
   
 }
@@ -85,11 +63,15 @@ void loop() {
     String code = keys.read();
     if (code.length() > 0  )
     {
+      Serial.print("Keys: ");
+      Serial.println(code.c_str());
       int dbIndex = db.durchsuchenKeys( code );
     }
-    //code = lese_RFID();
+    code = nfc.read();
     if (code.length() > 0  )
     {
+      Serial.print("NFC: ");
+      Serial.println(code.c_str());
       int dbIndex = db.durchsuchenRf( code );
     }
     //  nachricht_senden(el.tel1, el.message);
@@ -115,23 +97,3 @@ void nachricht_senden( String tel, String nachricht )
 }
 
 
-String lese_RFID(void) {
-  Serial.println(" lese_RFID");
-  String result;
-  uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };	// Buffer to store the returned UID
-  uint8_t uidLength;				// Length of the UID (4 or 7 bytes depending on ISO14443A card type)
-
-  if (nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, &uid[0], &uidLength, 100)) {
-    //Serial.println("Found a card!");
-    //Serial.print("UID Length: ");Serial.print(uidLength, DEC);Serial.println(" bytes");
-    //Serial.print("UID Value: ");
-    for (uint8_t i=0; i < uidLength; i++)
-    {
-      result += uid[i];
-      //Serial.print(" 0x");Serial.print(uid[i], HEX);
-    }
-	// Wait 1 second before continuing
-	//delay(1000);
-  }
-  return result;
-}
