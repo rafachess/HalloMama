@@ -23,8 +23,8 @@ class Tasten
 
   String read()
   {  
-    if ( !cap.begin(0x5A) )  
-    return {};
+    //if ( !cap.begin(0x5A) )  
+    //return {};
     delay(50);
     //Serial.println("lese_Tastencode");
     tastencode="";
@@ -43,15 +43,32 @@ class Tasten
       Serial.print(lasttouched);
       Serial.print(" Tz:");
       Serial.println(letzte_taste_zeit);*/
-
+  
       for (uint8_t i=0; i<12; i++) {
+        // it if *is* touched and *wasnt* touched before, alert!
+        if ((currtouched & _BV(i)) && !(lasttouched & _BV(i)) ) {
+          Serial.print(i); Serial.println(" touched");
+        }
+        // if it *was* touched and now *isnt*, alert!
+        if (!(currtouched & _BV(i)) && (lasttouched & _BV(i)) ) {
+          Serial.print(i); Serial.println(" released");
+          tastencode += String(i);
+          letzte_taste_zeit = millis();
+          break;
+        }
+      }
+
+      // reset our state
+      lasttouched = currtouched;
+
+     /* for (uint8_t i=0; i<12; i++) {
         if (!(currtouched & _BV(i)) && (lasttouched & _BV(i)) ) {       
           tastencode += String(i);
           letzte_taste_zeit = millis();
           break;
         }
       }
-      lasttouched = currtouched;
+      lasttouched = currtouched;*/
 
         if ( tastencode.length() > 0 )
         {

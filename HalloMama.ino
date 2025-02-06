@@ -67,7 +67,8 @@ void loop() {
       Serial.println(code.c_str());
       int dbIndex = db.durchsuchenKeys( code );
     }
-    code = nfc.read();
+    code="";
+    //code = nfc.read();
     if (code.length() > 0  )
     {
       Serial.print("NFC: ");
