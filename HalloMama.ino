@@ -85,13 +85,13 @@ void nachricht_senden( String tel, String nachricht )
    handy.send(tel, nachricht);
    lcd.clear(); 
    lcd.setPosition(0, 0);
-   /*!*/ Serial.println("Nachricht wird");
+   Serial.println("Nachricht wird");
    lcd.setPosition(0, 1);
-   /*!*/ Serial.println("gesendet...");
+   Serial.println("gesendet...");
    delay(2000);
    lcd.clear();
    lcd.setPosition(0, 0);
-   /*!*/ Serial.println("erfolgreich(-:");
+   Serial.println("erfolgreich(-:");
    delay(2000);
    lcd.clear();
    lcd.setPosition(0, 0);
