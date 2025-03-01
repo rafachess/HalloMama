@@ -1,3 +1,4 @@
+#pragma once
 #include <Adafruit_PN532.h>
 
 Adafruit_PN532 *pn532 = 0;
@@ -25,7 +26,7 @@ class NFC
   }
 
   String read(void) {
-    //Serial.println(" lese_RFID");
+    //Serial.println(" lese_RFID");+49
     String result;
     uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };	// Buffer to store the returned UID
     uint8_t uidLength;				// Length of the UID (4 or 7 bytes depending on ISO14443A card type)

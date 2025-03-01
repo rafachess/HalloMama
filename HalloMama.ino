@@ -1,12 +1,8 @@
-#include <Bonezegei_LCD1602_I2C.h>
+#include "lcd.h"
 #include "datenbank.h"
 #include "handy.h"
 #include "tasten.h"
 #include "nfc.h"
-
-
-
-Bonezegei_LCD1602_I2C lcd(0x27);
 
 Datenbank db;
 Handy handy;
@@ -14,87 +10,92 @@ Tasten keys;
 NFC nfc(2,3);
 
 
-void initLCD() {
-  lcd.begin();
-  lcd.print("Hallo");
-  delay(200);
-  lcd.clear(); 
-  lcd.setPosition(0, 0);      //param1 = X   param2 = Y
-  lcd.print("Schoen dass Sie");
-  lcd.setPosition(0, 1);      //param1 = X   param2 = Y 
-  lcd.print(" da sind");
-  delay(200);
-  lcd.clear(); 
-  lcd.setPosition(0, 0);
-  lcd.print("Projekt:");
-  lcd.setPosition(0, 1);
-  lcd.print("Hallo Mama");
-  delay(1000);
-  lcd.clear();
-  delay(1000);
-}
-
-
 
 
 void setup() {
             
-  db.addKeysCodeMessage("123","017646677143","Hallo");
-  db.addKeysCodeMessage("234","014675969977", "Hallo");
-  db.addKeysCodeMessage("345","0162436295759", "Hallo");
+  db.addKeysCodeMessage("123","017646677143","Hallo1");
+  db.addKeysCodeMessage("234","017646677143", "Hallo2");
+  db.addKeysCodeMessage("345","017646677143", "Hallo3");
+  db.addRFCodeMessage("191253445","+4915236338238", "Hallo4");
+  db.addRFCodeMessage("1292161812","017646677143", "Hi was geht?");
+  db.addRFCodeMessage("462428234115128","+4915753078030", "Hi Elena!");
 
   Serial.begin(9600);
   delay(500);
-  Serial.println("Start");
-  
   keys.start();
   nfc.start();
-  initLCD();
+  handy.start();
+  LCD::inst().start();
   delay(1000);
-  
+  //auto a = [](){ Serial.available(); };
 }
 
-//******* das ist die haupt Schleife
+//******* das ist die Haupt-Schleife
 void loop() {
   Serial.println("loop");
   for (;;)
   {
-   
+    keys.start();
     String code = keys.read();
     if (code.length() > 0  )
     {
-      Serial.print("Keys: ");
-      Serial.println(code.c_str());
-      int dbIndex = db.durchsuchenKeys( code );
+      int dbIndex = db.findKeys( code );
+      code="";
+      if ( dbIndex != -1 )
+      {        
+        auto el = db.element(dbIndex);
+        LCD::inst().print(0,0,"Sende:" + el.message );
+        LCD::inst().print(0,1, el.tel1 );
+        handy.send(el.tel1, el.message);
+        delay(3000);
+        continue; 
+      }
+      else
+      {
+        LCD::inst().print(0,0,"Pincode Fehler!" );
+        delay(3000);
+      }
     }
-    code="";
-    //code = nfc.read();
+
+    code = nfc.read();
     if (code.length() > 0  )
     {
-      Serial.print("NFC: ");
-      Serial.println(code.c_str());
-      int dbIndex = db.durchsuchenRf( code );
+      int dbIndex = db.findRf( code );
+      if ( dbIndex!=-1 )
+      {
+        auto el = db.element(dbIndex);
+        LCD::inst().print(0,0,"Sende:" + el.message );
+        LCD::inst().print(0,1, el.tel1 );
+        handy.send(el.tel1, el.message);
+        delay(3000);
+        continue;     
+      }
+      else
+      {
+        LCD::inst().print(0,0,"Karte fehler!" );
+        delay(3000);
+      }
     }
-    //  nachricht_senden(el.tel1, el.message);
   }
 }
 
-
+/*
 void nachricht_senden( String tel, String nachricht )
 {
    handy.send(tel, nachricht);
    lcd.clear(); 
    lcd.setPosition(0, 0);
-   Serial.println("Nachricht wird");
+   //Serial.println("Nachricht wird");
    lcd.setPosition(0, 1);
-   Serial.println("gesendet...");
+   //Serial.println("gesendet...");
    delay(2000);
    lcd.clear();
    lcd.setPosition(0, 0);
-   Serial.println("erfolgreich(-:");
+   //Serial.println("erfolgreich(-:");
    delay(2000);
    lcd.clear();
    lcd.setPosition(0, 0);
 }
-
+*/
 
