@@ -9,6 +9,9 @@ Handy handy;
 Tasten keys;
 NFC nfc(2,3);
 
+const int PIN_IRQ_KEYS = 2;
+const int PIN_IRQ_NFC = 3;
+
 
 
 
@@ -22,13 +25,14 @@ void setup() {
   db.addRFCodeMessage("462428234115128","+4915753078030", "Hi Elena!");
 
   Serial.begin(9600);
-  delay(500);
-  keys.start();
+  delay(500);  
   nfc.start();
   handy.start();
   LCD::inst().start();
+  keys.start();
   delay(1000);
-  //auto a = [](){ Serial.available(); };
+  pinMode( PIN_IRQ_KEYS, INPUT_PULLUP );
+  pinMode( PIN_IRQ_NFC, INPUT_PULLUP );
 }
 
 //******* das ist die Haupt-Schleife
@@ -36,6 +40,10 @@ void loop() {
   Serial.println("loop");
   for (;;)
   {
+    Serial.print( digitalRead( PIN_IRQ_KEYS ) );
+    Serial.print( " " );
+    Serial.println( digitalRead( PIN_IRQ_NFC ) );
+    
     keys.start();
     String code = keys.read();
     if (code.length() > 0  )
@@ -98,4 +106,3 @@ void nachricht_senden( String tel, String nachricht )
    lcd.setPosition(0, 0);
 }
 */
-
