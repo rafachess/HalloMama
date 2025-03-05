@@ -1,5 +1,5 @@
 #pragma once
-#include <Adafruit_MPR121.h>
+#include "Adafruit_MPR121.h"
 #include "lcd.h"
 
 #ifndef _BV

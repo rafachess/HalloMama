@@ -1,14 +1,14 @@
 #pragma once
 
-#include <Bonezegei_LCD1602_I2C.h>
+#include <LiquidCrystal_I2C.h>
 
 
 class LCD
 {
-  Bonezegei_LCD1602_I2C * lcd=0;
+  LiquidCrystal_I2C * lcd=0;
   LCD()
   {
-    lcd = new Bonezegei_LCD1602_I2C(0x27);
+    lcd = new LiquidCrystal_I2C(0x27,16,2);
   }
 
 public:
@@ -20,19 +20,20 @@ public:
   }
 
   void start() {
-    lcd->begin();
+    lcd->init();
     lcd->clear();
+    lcd->backlight();
     delay(100);
-    lcd->setPosition(0, 0);
+    lcd->setCursor(0, 0);
     lcd->print("Projekt");
-    lcd->setPosition(0, 1);
+    lcd->setCursor(0, 1);
     lcd->print("Hallo Mama");
     delay(2000);
     lcd->clear();
     delay(100);
-    lcd->setPosition(0, 0);
+    lcd->setCursor(0, 0);
     lcd->print("Jugend Forscht");
-    lcd->setPosition(0, 1);
+    lcd->setCursor(0, 1);
     lcd->print("2025");
     delay(3000);
     lcd->clear();
@@ -45,7 +46,7 @@ public:
 
   void setPosition( int r, int c)
   {
-    lcd->setPosition( r,c );
+    lcd->setCursor( r,c );
   }
 
   void print( String str )
@@ -58,12 +59,8 @@ public:
     if (r == 0 && c == 0)
       lcd->clear();
 
-    lcd->setPosition( r,c );
+    lcd->setCursor( r,c );
     lcd->print( str.c_str() );
   }
 
 };
-
-
-
-
