@@ -54,6 +54,16 @@ public:
     lcd->print( str.c_str() );
   }
 
+  void print( int v )
+  {
+    lcd->print( String(v).c_str() );
+  }
+  
+  void print( char v )
+  {
+    lcd->print( v );
+  }
+
   void print( int r, int c, String str )
   {
     if (r == 0 && c == 0)
