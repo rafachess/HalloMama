@@ -28,8 +28,8 @@ class Tasten
   {  
     //delay(50);
     tastencode="";   
-    LCD::inst().clear();
-    LCD::inst().setPosition( 0,0 );
+    LCD::inst().print( 0,1,"               " );
+    LCD::inst().setPosition( 0,1 );
     unsigned long letzte_taste_zeit = 0; // Zeit des letzten Tastendrucks
     const unsigned long zeit_pro_taste = 2000; // Timeout in Millisekunden
     int cnt=0;
