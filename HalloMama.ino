@@ -4,11 +4,6 @@
 #include "tasten.h"
 #include "nfc.h"
 
-/////////////////////////////////////////////
-// Funktion: setup
-// Initialisiert das System, lädt Testdaten 
-// in die Datenbank und startet die Module.
-/////////////////////////////////////////////
 void setup() {          
     // Beispiel-Daten in die Datenbank hinzufügen
     db_addKeysCodeMessage("123", "017646677143", "Hallo1");
@@ -20,30 +15,23 @@ void setup() {
 
     // Serielle Kommunikation starten
     Serial.begin(9600);
-    delay(500);  
-
     // Module initialisieren
     nfc_start();
     lcd_start();
     tasten_start();
-    Wire.setClock(100000);
     delay(1000);
 }
 
-/////////////////////////////////////////////
-// Funktion: loop
-// Hauptschleife für die Benutzer-Authentifizierung
-// Unterstützt Tastencode (PIN) und RFID-Karte.
-/////////////////////////////////////////////
 void loop() {
     Serial.println("loop");
 
     String code; // Speichert den eingegebenen Code
+    const int MaxTries = 25;  //Anzahl der Leseversuche für Tasten und RFID
 
     while (true) {
         // Tasteneingabe prüfen (PIN-Code)
         lcd_print(0, 0, "Pin code...");
-        code = tasten_read(25);
+        code = tasten_read(MaxTries);
 
         if (code.length() > 0) {
             int dbIndex = db_findKeys(code);
@@ -64,7 +52,7 @@ void loop() {
 
         // RFID-Eingabe prüfen
         lcd_print(0, 0, "RFID...");
-        code = nfc_read(25);
+        code = nfc_read(MaxTries);
 
         if (code.length() > 0) {
             int dbIndex = db_findRf(code);

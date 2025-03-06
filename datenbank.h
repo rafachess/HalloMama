@@ -15,10 +15,7 @@ struct DBElement
 DBElement dataBase[MaxElements]; // Datenbank als Liste mit maximal 10 Einträgen
 int lastFreeElement = 0;         // Anzahl gespeicherter Einträge, zeigt auf den nächsten freien Platz
 
-
-/////////////////////////////
-// Funktion: Fügt eine Nachricht und eine Telefonnummer für einen Tasten-Code hinzu
-////////////////////////////
+//### Funktion: Fügt eine Nachricht und eine Telefonnummer für einen Tasten-Code hinzu
 void db_addKeysCodeMessage(String code, String phone, String message)
 {
   // Prüft, ob die Datenbank bereits voll ist
@@ -27,16 +24,11 @@ void db_addKeysCodeMessage(String code, String phone, String message)
     
   // Speichert den neuen Eintrag in der Datenbank
   // Setzt den Tasten-Code, aber lässt RF und Finger leer
-  dataBase[lastFreeElement] = {code, "", "", phone, message};
-
-  // Erhöht den Zähler für den nächsten freien Eintrag
-  lastFreeElement++;
+  dataBase[lastFreeElement] = {code, "", "", phone, message};  
+  lastFreeElement++; // Erhöht den Zähler für den nächsten freien Eintrag
 }
 
-
-//////////////////////////////
-// Funktion: Fügt eine Nachricht und eine Telefonnummer für einen RF-Karten-Code hinzu
-/////////////////////////////
+//### Funktion: Fügt eine Nachricht und eine Telefonnummer für einen RF-Karten-Code hinzu
 void db_addRFCodeMessage(String code, String phone, String message)
 {
   // Prüft, ob die Datenbank bereits voll ist
@@ -45,48 +37,23 @@ void db_addRFCodeMessage(String code, String phone, String message)
 
   // Speichert den neuen Eintrag in der Datenbank
   // Setzt den RF-Code, aber lässt Tasten-Code und Finger leer
-  dataBase[lastFreeElement] = {"", code, "", phone, message};
-
-  // Erhöht den Zähler für den nächsten freien Eintrag
-  lastFreeElement++;
+  dataBase[lastFreeElement] = {"", code, "", phone, message};  
+  lastFreeElement++; // Erhöht den Zähler für den nächsten freien Eintrag
 }
 
 
-///////////////////////////////
-// Funktion: Fügt eine Nachricht und eine Telefonnummer für einen Fingerabdruck-Code hinzu
-///////////////////////////////
-void db_addFingerCodeMessage(String code, String phone, String message)
-{
-  // Prüft, ob die Datenbank bereits voll ist
-  if (lastFreeElement >= MaxElements)
-    return;
-
-  // Speichert den neuen Eintrag in der Datenbank
-  // Setzt den Fingerabdruck-Code, aber lässt Tasten-Code und RF leer
-  dataBase[lastFreeElement] = {"", "", code, phone, message};
-
-  // Erhöht den Zähler für den nächsten freien Eintrag
-  lastFreeElement++;
-}
-
-///////////////////////////
-// Funktion: Gibt die Telefonnummer für einen gespeicherten Eintrag zurück
-///////////////////////////
+//### Funktion: Gibt die Telefonnummer für einen gespeicherten Eintrag zurück
 String db_phone(int index)
 {
-  // Prüft, ob der Index innerhalb des gültigen Bereichs liegt
-  if (index >= MaxElements || index < 0)
+  
+  if (index >= MaxElements || index < 0) // Prüft, ob der Index innerhalb des gültigen Bereichs liegt
   {
     return ""; // Falls der Index ungültig ist, gib einen leeren String zurück
   }
-  
   return dataBase[index].tel1; // Gibt die gespeicherte Telefonnummer zurück
 }
 
-
-///////////////////////// 
-//Funktion: Gibt die gespeicherte Nachricht für einen bestimmten Eintrag zurück
-/////////////////////////
+//### Funktion: Gibt die gespeicherte Nachricht für einen bestimmten Eintrag zurück
 String db_message(int index)
 {
   // Prüft, ob der Index innerhalb des gültigen Bereichs liegt
@@ -94,69 +61,35 @@ String db_message(int index)
   {
     return ""; // Falls der Index ungültig ist, gib einen leeren String zurück
   }
-  
   return dataBase[index].message; // Gibt die gespeicherte Nachricht zurück
 }
 
-
-///////////////////////// 
-//Funktion: Sucht nach einem Tasten-Code in der Datenbank und gibt ein Index zurück
-////////////////////////
+//### Funktion: Sucht nach einem Tasten-Code in der Datenbank und gibt ein Index zurück
 int db_findKeys(String code)
 {
   // Geht alle Einträge in der Datenbank durch
   for (int i = 0; i < MaxElements; i++)
   {
-    DBElement el = dataBase[i];
-
-    // Falls der gespeicherte Tasten-Code mit dem gesuchten übereinstimmt, gib die Position des DB-Elements zurück
-    if (el.codeKeys == code)
+    DBElement el = dataBase[i];    
+    if (el.codeKeys == code)// Falls der gespeicherte Tasten-Code mit dem gesuchten übereinstimmt, ... 
     {
-      return i;
+      return i;  //gib die Position des DB-Elements zurück
     }
   } 
-
   return -1; // Falls kein passender Code gefunden wurde, gib -1 zurück
 }
 
-
-////////////////////// 
-//Funktion: Sucht nach einem RF-Karten-Code in der Datenbank und gibt ein Index zurück
-//////////////////////
+//### Funktion: Sucht nach einem RF-Karten-Code in der Datenbank und gibt ein Index zurück
 int db_findRf(String code)
 {
   // Geht alle Einträge in der Datenbank durch
   for (int i = 0; i < MaxElements; i++)
   {
-    DBElement el = dataBase[i];
-
-    // Falls der gespeicherte RF-Code mit dem gesuchten übereinstimmt, gib die Position des DB-Elements zurück
-    if (el.codeRF == code)
+    DBElement el = dataBase[i];    
+    if (el.codeRF == code) // Falls der gespeicherte RF-Code mit dem gesuchten übereinstimmt, ...
     {
-      return i;
+      return i; // gib die Position des DB-Elements zurück
     }
   } 
-
-  return -1; // Falls kein passender Code gefunden wurde, gib -1 zurück
-}
-
-
-///////////////////////
-//Funktion: Sucht nach einem Fingerabdruck-Code in der Datenbank und gibt ein Index zurück
-////////////////////////
-int db_findFinger(String code)
-{
-  // Geht alle Einträge in der Datenbank durch
-  for (int i = 0; i < MaxElements; i++)
-  {
-    DBElement el = dataBase[i];
-
-    // Falls der gespeicherte Fingerabdruck-Code mit dem gesuchten übereinstimmt, gib die Position des DB-Elements zurück
-    if (el.codeFinger == code)
-    {
-      return i;
-    }
-  } 
-
   return -1; // Falls kein passender Code gefunden wurde, gib -1 zurück
 }
