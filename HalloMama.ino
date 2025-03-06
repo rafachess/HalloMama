@@ -5,12 +5,7 @@
 #include "nfc.h"
 
 
-Tasten keys;
-
-
-
-void setup() {
-            
+void setup() {          
   db_addKeysCodeMessage("123","017646677143","Hallo1");
   db_addKeysCodeMessage("234","017646677143", "Hallo2");
   db_addKeysCodeMessage("345","017646677143", "Hallo3");
@@ -22,7 +17,7 @@ void setup() {
   delay(500);  
   nfc_start();
   lcd_start();
-  keys.start();
+  tasten_start();
   Wire.setClock(100000);
   delay(1000);
 }
@@ -37,37 +32,32 @@ void loop() {
   {
 
     lcd_print(0,0,"Pin code..." );
-    keys.start();
     
-    for (int i=0; i< 100;i++)
+    code = tasten_read(25);
+    if (code.length() > 0  )
     {
-      
-      code = keys.read();
-      if (code.length() > 0  )
-      {
-        int dbIndex = db_findKeys( code );
-        code="";
-        if ( dbIndex != -1 )
-        {        
-          lcd_print(0,0,"Sende:" + db_message(dbIndex) );
-          lcd_print(0,1, db_phone(dbIndex) );
-          handy_send( db_phone(dbIndex), db_message(dbIndex));
-          delay(3000);
-          break; 
-        }
-        else
-        {
-          lcd_print(0,0,"Pincode Fehler!" );
-          delay(3000);
-          break; 
-        }
+      int dbIndex = db_findKeys( code );
+      code="";
+      if ( dbIndex != -1 )
+      {        
+        lcd_print(0,0,"Sende:" + db_message(dbIndex) );
+        lcd_print(0,1, db_phone(dbIndex) );
+        handy_send( db_phone(dbIndex), db_message(dbIndex));
+        delay(3000);
+        break; 
       }
-      delay(10);
+      else
+      {
+        lcd_print(0,0,"Pincode Fehler!" );
+        delay(3000);
+        break; 
+      }
     }
+     
 
     lcd_print(0,0,"RFID..." );
       
-    String code = nfc_read();
+    String code = nfc_read(25);
     if (code.length() > 0  )
     {
       int dbIndex = db_findRf( code );

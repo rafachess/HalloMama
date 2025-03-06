@@ -16,8 +16,8 @@ void nfc_start() {
 }
 
 
-String nfc_read() {
-  for (int i=0; i< 100;i++)
+String nfc_read(int nTries ) {
+  for (int i=0; i< nTries;i++)
   {
     String result;
     uint8_t uid[] = { 0, 0, 0, 0, 0, 0, 0 };	// Buffer to store the returned UID
