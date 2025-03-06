@@ -1,25 +1,14 @@
-//#include <SoftwareSerial.h>
-//SoftwareSerial mySerial(2, 3); // RX, TX
-#pragma once
+#pragma once  // Verhindert, dass diese Datei mehrmals geladen wird
 
-class Handy
+// Funktion: Sendet eine Nachricht an das Handy über die ODG-Schnittstelle
+// Das Handy empfängt die Nachricht und sendet sie dann als SMS weiter.
+void handy_send(String tel, String nachricht)
 {
-  public:
-  void start()
-  {
-    //mySerial.begin(9600);
-  }
+  // Erstelle die Nachricht im speziellen Format für die App
+  // Beispiel: "send|1234567890|Hallo!|\n"
+  String message = String("send|") + tel + "|" + nachricht + "|\n";
 
-  void send( String tel, String nachricht )
-  {
-    //Serial.print ("Handy::send ");
-    //Serial.print (tel.c_str());
-    //Serial.print (" ");
-    //Serial.println (nachricht.c_str());
-    String message = String("send|") + tel + "|" + nachricht + "|\n";
-    Serial.print(message.c_str());
-    //mySerial.write(message.c_str());
-    //Serial.println ("Ende");
-    
-  }
-};
+  // Schickt die Nachricht über die serielle Schnittstelle (z. B. Bluetooth oder USB)
+  // Das Handy mit AppInventor liest diese Nachricht aus und sendet sie als SMS.
+  Serial.print(message.c_str()); 
+}

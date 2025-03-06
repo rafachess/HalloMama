@@ -4,8 +4,7 @@
 #include "tasten.h"
 #include "nfc.h"
 
-//Datenbank db;
-Handy handy;
+
 Tasten keys;
 NFC nfc(2,3);
 
@@ -27,8 +26,6 @@ void setup() {
   Serial.begin(9600);
   delay(500);  
   nfc.start();
-  //nfc.stop();
-  handy.start();
   LCD::inst().start();
   keys.start();
   Wire.setClock(100000);
@@ -61,7 +58,7 @@ void loop() {
         {        
           LCD::inst().print(0,0,"Sende:" + db_message(dbIndex) );
           LCD::inst().print(0,1, db_phone(dbIndex) );
-          handy.send( db_phone(dbIndex), db_message(dbIndex));
+          handy_send( db_phone(dbIndex), db_message(dbIndex));
           delay(3000);
           break; 
         }
@@ -86,7 +83,7 @@ void loop() {
         {
           LCD::inst().print(0,0,"Sende:" + db_message(dbIndex) );
           LCD::inst().print(0,1, db_phone(dbIndex) );
-          handy.send( db_phone(dbIndex), db_message(dbIndex));
+          handy_send( db_phone(dbIndex), db_message(dbIndex));
           delay(3000);
           break;     
         }
