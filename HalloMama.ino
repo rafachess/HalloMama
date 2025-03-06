@@ -59,10 +59,9 @@ void loop() {
         code="";
         if ( dbIndex != -1 )
         {        
-          auto el = db.element(dbIndex);
-          LCD::inst().print(0,0,"Sende:" + el.message );
-          LCD::inst().print(0,1, el.tel1 );
-          handy.send(el.tel1, el.message);
+          LCD::inst().print(0,0,"Sende:" + db.message(dbIndex) );
+          LCD::inst().print(0,1, db.phone(dbIndex) );
+          handy.send( db.phone(dbIndex), db.message(dbIndex));
           delay(3000);
           break; 
         }
@@ -85,10 +84,9 @@ void loop() {
         int dbIndex = db.findRf( code );
         if ( dbIndex!=-1 )
         {
-          auto el = db.element(dbIndex);
-          LCD::inst().print(0,0,"Sende:" + el.message );
-          LCD::inst().print(0,1, el.tel1 );
-          handy.send(el.tel1, el.message);
+          LCD::inst().print(0,0,"Sende:" + db.message(dbIndex) );
+          LCD::inst().print(0,1, db.phone(dbIndex) );
+          handy.send( db.phone(dbIndex), db.message(dbIndex));
           delay(3000);
           break;     
         }

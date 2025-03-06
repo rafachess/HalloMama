@@ -11,17 +11,18 @@ struct DBElement
   String message;
 };
 
+
 class Datenbank
 {
-private:
-  
   DBElement dataBase[MaxElements];
   int lastFreeElement=0;
+  DBElement element(int index);
 public:
   void addKeysCodeMessage(String code, String phone, String message);
   void addRFCodeMessage(String code, String phone, String message);
   void addFingerCodeMessage(String code, String phone, String message);
-  DBElement element(int index);
+  String phone(int index);
+  String message(int index);
   int findKeys(String code);
   int findRf(String code);
   int findFinger(String code);
@@ -61,6 +62,16 @@ DBElement Datenbank::element(int index)
     return {};
 
   return dataBase[index];
+}
+
+String Datenbank::phone(int index)
+{
+   return element(index).tel1; 
+}
+
+String Datenbank::message(int index)
+{
+  return element(index).message;
 }
 
 int Datenbank::findKeys(String code)
