@@ -4,7 +4,7 @@
 #include "tasten.h"
 #include "nfc.h"
 
-Datenbank db;
+//Datenbank db;
 Handy handy;
 Tasten keys;
 NFC nfc(2,3);
@@ -17,12 +17,12 @@ const int PIN_IRQ_NFC = 3;
 
 void setup() {
             
-  db.addKeysCodeMessage("123","017646677143","Hallo1");
-  db.addKeysCodeMessage("234","017646677143", "Hallo2");
-  db.addKeysCodeMessage("345","017646677143", "Hallo3");
-  db.addRFCodeMessage("191253445","+4915236338238", "Hallo4");
-  db.addRFCodeMessage("1292161812","017646677143", "Hi was geht?");
-  db.addRFCodeMessage("462428234115128","+4915753078030", "Hi Elena!");
+  db_addKeysCodeMessage("123","017646677143","Hallo1");
+  db_addKeysCodeMessage("234","017646677143", "Hallo2");
+  db_addKeysCodeMessage("345","017646677143", "Hallo3");
+  db_addRFCodeMessage("191253445","+4915236338238", "Hallo4");
+  db_addRFCodeMessage("1292161812","017646677143", "Hi was geht?");
+  db_addRFCodeMessage("462428234115128","+4915753078030", "Hi Elena!");
 
   Serial.begin(9600);
   delay(500);  
@@ -55,13 +55,13 @@ void loop() {
       code = keys.read();
       if (code.length() > 0  )
       {
-        int dbIndex = db.findKeys( code );
+        int dbIndex = db_findKeys( code );
         code="";
         if ( dbIndex != -1 )
         {        
-          LCD::inst().print(0,0,"Sende:" + db.message(dbIndex) );
-          LCD::inst().print(0,1, db.phone(dbIndex) );
-          handy.send( db.phone(dbIndex), db.message(dbIndex));
+          LCD::inst().print(0,0,"Sende:" + db_message(dbIndex) );
+          LCD::inst().print(0,1, db_phone(dbIndex) );
+          handy.send( db_phone(dbIndex), db_message(dbIndex));
           delay(3000);
           break; 
         }
@@ -81,12 +81,12 @@ void loop() {
       code = nfc.read();
       if (code.length() > 0  )
       {
-        int dbIndex = db.findRf( code );
+        int dbIndex = db_findRf( code );
         if ( dbIndex!=-1 )
         {
-          LCD::inst().print(0,0,"Sende:" + db.message(dbIndex) );
-          LCD::inst().print(0,1, db.phone(dbIndex) );
-          handy.send( db.phone(dbIndex), db.message(dbIndex));
+          LCD::inst().print(0,0,"Sende:" + db_message(dbIndex) );
+          LCD::inst().print(0,1, db_phone(dbIndex) );
+          handy.send( db_phone(dbIndex), db_message(dbIndex));
           delay(3000);
           break;     
         }
