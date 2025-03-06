@@ -6,11 +6,6 @@
 
 
 Tasten keys;
-NFC nfc(2,3);
-
-const int PIN_IRQ_KEYS = 2;
-const int PIN_IRQ_NFC = 3;
-
 
 
 
@@ -25,13 +20,11 @@ void setup() {
 
   Serial.begin(9600);
   delay(500);  
-  nfc.start();
-  LCD::inst().start();
+  nfc_start();
+  lcd_start();
   keys.start();
   Wire.setClock(100000);
   delay(1000);
-  pinMode( PIN_IRQ_KEYS, INPUT_PULLUP );
-  pinMode( PIN_IRQ_NFC, INPUT_PULLUP );
 }
 
 //******* das ist die Haupt-Schleife
@@ -43,7 +36,7 @@ void loop() {
   for (;;)
   {
 
-    LCD::inst().print(0,0,"Pin code..." );
+    lcd_print(0,0,"Pin code..." );
     keys.start();
     
     for (int i=0; i< 100;i++)
@@ -56,15 +49,15 @@ void loop() {
         code="";
         if ( dbIndex != -1 )
         {        
-          LCD::inst().print(0,0,"Sende:" + db_message(dbIndex) );
-          LCD::inst().print(0,1, db_phone(dbIndex) );
+          lcd_print(0,0,"Sende:" + db_message(dbIndex) );
+          lcd_print(0,1, db_phone(dbIndex) );
           handy_send( db_phone(dbIndex), db_message(dbIndex));
           delay(3000);
           break; 
         }
         else
         {
-          LCD::inst().print(0,0,"Pincode Fehler!" );
+          lcd_print(0,0,"Pincode Fehler!" );
           delay(3000);
           break; 
         }
@@ -72,29 +65,26 @@ void loop() {
       delay(10);
     }
 
-    LCD::inst().print(0,0,"RFID..." );
-    for (int i=0; i< 100;i++)
-    {  
-      code = nfc.read();
-      if (code.length() > 0  )
+    lcd_print(0,0,"RFID..." );
+      
+    String code = nfc_read();
+    if (code.length() > 0  )
+    {
+      int dbIndex = db_findRf( code );
+      if ( dbIndex!=-1 )
       {
-        int dbIndex = db_findRf( code );
-        if ( dbIndex!=-1 )
-        {
-          LCD::inst().print(0,0,"Sende:" + db_message(dbIndex) );
-          LCD::inst().print(0,1, db_phone(dbIndex) );
-          handy_send( db_phone(dbIndex), db_message(dbIndex));
-          delay(3000);
-          break;     
-        }
-        else
-        {
-          LCD::inst().print(0,0,"Karte fehler!" );
-          delay(3000);
-          break;
-        }
+        lcd_print(0,0,"Sende:" + db_message(dbIndex) );
+        lcd_print(0,1, db_phone(dbIndex) );
+        handy_send( db_phone(dbIndex), db_message(dbIndex));
+        delay(3000);
+        break;     
       }
-      delay(10);
+      else
+      {
+        lcd_print(0,0,"Karte fehler!" );
+        delay(3000);
+        break;
+      }
     }
   }
 }
